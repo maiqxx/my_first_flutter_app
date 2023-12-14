@@ -1,16 +1,22 @@
+// Importing necessary packages and dependencies
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
+// Main entry point of the application
 void main() {
   runApp(MyApp());
 }
 
+// Root widget of the application
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+     // Using Provider for state management
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
@@ -26,16 +32,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// State class managing the state of the application
 class MyAppState extends ChangeNotifier {
+
+  // State variables
   var current = WordPair.random();
+  var favorites = <WordPair>[];
 
   void getNext() {
     current = WordPair.random();
     notifyListeners();
   }
 
-  var favorites = <WordPair>[];
-
+  // Method to toggle the favorite status of the current word pair
   void toggleFavorite() {
     if (favorites.contains(current)) {
       favorites.remove(current);
@@ -46,13 +55,15 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
+// Home page widget
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Scaffold with NavigationRail and a main content area
     return Scaffold(
       body: Row(
         children: [
-          SafeArea(
+          SafeArea(   // NavigationRail on the left side of the screen
             child: NavigationRail(
               extended: true,
               destinations: [
@@ -71,6 +82,8 @@ class MyHomePage extends StatelessWidget {
               },
             ),
           ),
+
+          // Expanded container for the main content area
           Expanded(
             child: Container(
               color: Theme.of(context).colorScheme.primaryContainer,
@@ -83,12 +96,16 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
+// Widget for generating and displaying word pairs
 class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    // Accessing the state using the Provider
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
 
+    // Determining the favorite icon based on the current word pair's status
     IconData icon;
     if (appState.favorites.contains(pair)) {
       icon = Icons.favorite;
@@ -96,6 +113,7 @@ class GeneratorPage extends StatelessWidget {
       icon = Icons.favorite_border;
     }
 
+    // UI layout for the GeneratorPage
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -105,7 +123,7 @@ class GeneratorPage extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ElevatedButton.icon(
+              ElevatedButton.icon(  // Like button with an icon
                 onPressed: () {
                   appState.toggleFavorite();
                 },
@@ -113,7 +131,7 @@ class GeneratorPage extends StatelessWidget {
                 label: Text('Like'),
               ),
               SizedBox(width: 10),
-              ElevatedButton(
+              ElevatedButton( // Next button
                 onPressed: () {
                   appState.getNext();
                 },
@@ -127,7 +145,7 @@ class GeneratorPage extends StatelessWidget {
   }
 }
 
-
+// Widget for displaying a large card with a word pair
 class BigCard extends StatelessWidget {
   const BigCard({
     super.key,
@@ -138,6 +156,8 @@ class BigCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // Styling for the text in the card
     final theme = Theme.of(context);
     final style = theme.textTheme.displayMedium!.copyWith(
       color: theme.colorScheme.onPrimary,
@@ -145,6 +165,7 @@ class BigCard extends StatelessWidget {
       letterSpacing: 2.0,
     );
 
+    // Card widget displaying the word pair
     return Card(
       color: theme.colorScheme.primary,
       child: Padding(
